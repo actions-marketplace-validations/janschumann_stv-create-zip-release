@@ -9,9 +9,12 @@ inputs:
 runs:
   using: "composite"
   steps:
+  - name: Cleanup Artifact Name
+    id: artifact_name
+    run: echo "artifact_name=$(echo ${{ github.event.repository.name }}} | sed 's/com_//').zip" >> "$GITHUB_OUTPUT"
   - name: Create Artifact
-    run: zip -r ${{ github.event.repository.name }}.zip ${{ inputs.artifacts }}
+    run: zip -r ${{ steps.artifact_name.outputs.artifact_name }} ${{ inputs.artifacts }}
   - name: Create Release
     uses: ncipollo/release-action@v1
     with:
-      artifacts: ${{ github.event.repository.name }}.zip
+      artifacts: ${{ steps.artifact_name.outputs.artifact_name }}
