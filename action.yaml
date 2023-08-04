@@ -1,0 +1,17 @@
+name: stv-create-zip-release
+description: Action to create a release with a ZIP artifact created from the contents of given artifacts
+
+inputs:
+  artifacts:
+    description: 'A list of file and folder names separated by whitespace'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+  - name: Create Artifact
+    run: zip -r ${{ github.event.repository.name }}.zip ${{ inputs.artifacts }}
+  - name: Create Release
+    uses: ncipollo/release-action@v1
+    with:
+      artifacts: ${{ github.event.repository.name }}.zip
